@@ -1,0 +1,2410 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>認知能力小測驗 — Cognitive Battery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #f4f0e6;
+  --paper-dark: #ebe5d4;
+  --ink: #1a1814;
+  --ink-soft: #44403a;
+  --rule: #8a7e63;
+  --accent: #8b2417;
+  --accent-soft: #c89b7b;
+  --correct: #3d5a3a;
+  --wrong: #8b2417;
+  --shadow: rgba(26, 24, 20, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Noto Serif TC', 'Cormorant Garamond', serif;
+  min-height: 100vh;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(139, 36, 23, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(138, 126, 99, 0.04) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.6;
+}
+
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 60px 40px 100px;
+  position: relative;
+  z-index: 2;
+}
+
+/* ============ HEADER ============ */
+.masthead {
+  border-top: 3px double var(--ink);
+  border-bottom: 1px solid var(--rule);
+  padding: 24px 0 16px;
+  margin-bottom: 48px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 24px;
+}
+
+.masthead .left, .masthead .right {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.masthead .right { text-align: right; }
+
+.masthead .title {
+  text-align: center;
+}
+
+.masthead .title h1 {
+  font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+  font-weight: 600;
+  font-size: 32px;
+  letter-spacing: 0.02em;
+  font-style: italic;
+}
+
+.masthead .title .sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  margin-top: 4px;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+}
+
+/* ============ DISCLAIMER ============ */
+.disclaimer {
+  background: var(--paper-dark);
+  border-left: 3px solid var(--accent);
+  padding: 16px 20px;
+  margin-bottom: 40px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+.disclaimer strong {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ============ MENU ============ */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.menu-card {
+  background: var(--paper-dark);
+  border: 1px solid var(--rule);
+  padding: 28px 26px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--ink);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.4s cubic-bezier(0.7, 0, 0.3, 1);
+  z-index: 0;
+}
+
+.menu-card:hover::before {
+  transform: scaleY(1);
+}
+
+.menu-card:hover .card-inner > * {
+  color: var(--paper);
+}
+
+.menu-card:hover .card-inner .roman {
+  color: var(--accent-soft);
+}
+
+.card-inner {
+  position: relative;
+  z-index: 1;
+}
+
+.card-inner > * {
+  transition: color 0.3s ease;
+}
+
+.menu-card .roman {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  letter-spacing: 0.3em;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.menu-card h2 {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-bottom: 10px;
+}
+
+.menu-card .construct {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+}
+
+.menu-card p {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+/* ============ SCREEN ============ */
+.screen {
+  display: none;
+  animation: fadeIn 0.5s ease;
+}
+
+.screen.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============ TEST HEADER ============ */
+.test-header {
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 20px;
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.test-header .title-block h2 {
+  font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+  font-style: italic;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.test-header .title-block .meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.test-header .progress {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.test-header .progress .num {
+  font-size: 24px;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* ============ INSTRUCTIONS ============ */
+.instructions {
+  background: var(--paper-dark);
+  border: 1px solid var(--rule);
+  padding: 24px 28px;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.instructions::before {
+  content: '指 · 導 · 語';
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  background: var(--paper);
+  padding: 0 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--accent);
+}
+
+.instructions p {
+  font-size: 15px;
+  line-height: 1.85;
+  color: var(--ink);
+}
+
+.instructions p + p {
+  margin-top: 10px;
+}
+
+/* ============ QUESTION AREA ============ */
+.question-area {
+  background: #fdfaf0;
+  border: 1px solid var(--rule);
+  box-shadow: 0 2px 12px var(--shadow);
+  padding: 40px;
+  margin-bottom: 24px;
+  min-height: 300px;
+}
+
+.stem-svg {
+  display: block;
+  margin: 0 auto 32px;
+  max-width: 100%;
+}
+
+.choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.choice {
+  background: var(--paper);
+  border: 1.5px solid var(--rule);
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.choice:hover {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px var(--shadow);
+}
+
+.choice .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--ink-soft);
+}
+
+.choice.selected {
+  border-color: var(--accent);
+  background: #fff;
+}
+
+.choice.correct {
+  border-color: var(--correct);
+  background: #e8efe6;
+}
+
+.choice.wrong {
+  border-color: var(--wrong);
+  background: #f3e3df;
+}
+
+/* ============ CONTROLS ============ */
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+}
+
+button {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  padding: 11px 26px;
+  border: 1.5px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+button.primary {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+button.primary:hover:not(:disabled) {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.feedback {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.feedback.correct { color: var(--correct); }
+.feedback.wrong { color: var(--wrong); }
+
+/* ============ TIMER (for symbol search) ============ */
+.timer-bar {
+  height: 4px;
+  background: var(--paper-dark);
+  border: 1px solid var(--rule);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.timer-fill {
+  height: 100%;
+  background: var(--accent);
+  width: 100%;
+  transition: width 0.1s linear;
+}
+
+/* ============ RESULTS ============ */
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-size: 14px;
+}
+
+.results-table th, .results-table td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--rule);
+}
+
+.results-table th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+
+.results-table td.score {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.results-summary {
+  background: var(--paper-dark);
+  border-left: 3px solid var(--accent);
+  padding: 20px 24px;
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--ink-soft);
+}
+
+/* ============ SYMBOL SEARCH SPECIFIC ============ */
+.symbol-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid var(--rule);
+  margin-bottom: 12px;
+}
+
+.symbol-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.symbol-group .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  margin-right: 8px;
+}
+
+.symbol-cell {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper);
+}
+
+.symbol-cell svg {
+  width: 26px;
+  height: 26px;
+}
+
+.symbol-decision {
+  display: flex;
+  gap: 14px;
+}
+
+.symbol-decision button {
+  padding: 10px 24px;
+  font-size: 13px;
+  min-width: 70px;
+}
+
+/* ============ FIGURE WEIGHT SPECIFIC ============ */
+.balance-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 32px;
+}
+
+.balance-svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ============ COVER PAGE ============ */
+.cover {
+  display: none;
+  min-height: calc(100vh - 80px);
+  padding: 40px 0 60px;
+  position: relative;
+}
+
+.cover.active { display: block; }
+
+.cover-frame {
+  border: 1px solid var(--rule);
+  background: var(--paper-dark);
+  position: relative;
+  padding: 56px 48px 52px;
+  overflow: hidden;
+}
+
+.cover-frame::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  border: 1px solid var(--rule);
+  pointer-events: none;
+}
+
+.cover-tag {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 48px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.cover-tag .vol { color: var(--accent); }
+
+.cover-title {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.cover-title .eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 22px;
+}
+
+.cover-title h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(48px, 7vw, 78px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+
+.cover-title h1 .amp {
+  color: var(--accent);
+  font-weight: 400;
+}
+
+.cover-title .zh {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 500;
+  font-size: clamp(18px, 2.2vw, 24px);
+  letter-spacing: 0.4em;
+  color: var(--ink-soft);
+  margin-left: 0.4em; /* compensate for last char spacing */
+}
+
+/* Decorative SVG row */
+.cover-emblems {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  margin: 36px 0 32px;
+  opacity: 0.85;
+}
+
+.cover-emblems svg {
+  display: block;
+}
+
+.cover-emblems .divider {
+  width: 1px;
+  height: 28px;
+  background: var(--rule);
+}
+
+/* Intro paragraph */
+.cover-lede {
+  max-width: 580px;
+  margin: 0 auto 36px;
+  text-align: center;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 15px;
+  line-height: 1.85;
+  color: var(--ink-soft);
+}
+
+.cover-lede em {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  color: var(--ink);
+  font-size: 17px;
+}
+
+/* Subtest preview row */
+.cover-preview {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  margin: 40px 0 44px;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.preview-cell {
+  text-align: center;
+  padding: 18px 12px;
+  border-right: 1px solid var(--rule);
+  position: relative;
+}
+
+.preview-cell:last-child {
+  border-right: none;
+}
+
+.preview-cell .pr-roman {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 22px;
+  color: var(--accent);
+  margin-bottom: 4px;
+  letter-spacing: 0.1em;
+}
+
+.preview-cell .pr-name {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+
+.preview-cell .pr-en {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* CTA */
+.cover-cta {
+  text-align: center;
+  margin-top: 12px;
+}
+
+.cover-cta button {
+  font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+  font-size: 18px;
+  font-style: italic;
+  letter-spacing: 0.15em;
+  padding: 16px 56px;
+  background: var(--ink);
+  color: var(--paper);
+  border: 1.5px solid var(--ink);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.cover-cta button:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  letter-spacing: 0.22em;
+}
+
+.cover-cta .note {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-top: 18px;
+}
+
+/* Bottom signature */
+.cover-sig {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 44px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.cover-sig .seal {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cover-sig .seal::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: inline-block;
+}
+
+/* Hide masthead on cover page */
+body.show-cover .masthead { display: none; }
+
+@media (max-width: 720px) {
+  .container { padding: 32px 20px 60px; }
+  .masthead { grid-template-columns: 1fr; text-align: center; }
+  .masthead .right { text-align: center; }
+  .menu-grid { grid-template-columns: 1fr; }
+  .question-area { padding: 24px; }
+  .symbol-row { flex-direction: column; align-items: stretch; gap: 16px; }
+  .cover-frame { padding: 32px 20px 28px; }
+  .cover-tag { font-size: 9px; letter-spacing: 0.18em; }
+  .cover-emblems { gap: 16px; }
+  .cover-emblems .divider { display: none; }
+  .cover-preview { grid-template-columns: repeat(2, 1fr); }
+  .preview-cell { border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+  .preview-cell:nth-child(2n) { border-right: none; }
+  .preview-cell:last-child { border-bottom: none; grid-column: 1 / -1; }
+  .cover-sig { flex-direction: column; gap: 8px; text-align: center; }
+}
+</style>
+</head>
+<body class="show-cover">
+
+<div class="container">
+
+<!-- =================== COVER PAGE =================== -->
+<section id="cover" class="cover active">
+  <div class="cover-frame">
+
+    <div class="cover-tag">
+      <span><span class="vol">Vol. IV</span> · No. 04 — MMXXVI</span>
+      <span>原 創 認 知 體 驗</span>
+      <span>Anthropic Lab</span>
+    </div>
+
+    <div class="cover-title">
+      <div class="eyebrow">A Battery of Five Subtests</div>
+      <h1>Cognitive <span class="amp">&amp;</span> Curious</h1>
+      <div class="zh">認 知 能 力 小 測 驗</div>
+    </div>
+
+    <!-- Decorative emblems: 4 SVG icons representing the 4 subtests -->
+    <div class="cover-emblems" aria-hidden="true">
+      <!-- I. Matrix -->
+      <svg width="36" height="36" viewBox="0 0 36 36">
+        <rect x="2" y="2" width="14" height="14" fill="none" stroke="#1a1814" stroke-width="1.2"/>
+        <rect x="20" y="2" width="14" height="14" fill="none" stroke="#1a1814" stroke-width="1.2"/>
+        <rect x="2" y="20" width="14" height="14" fill="none" stroke="#1a1814" stroke-width="1.2"/>
+        <rect x="20" y="20" width="14" height="14" fill="none" stroke="#1a1814" stroke-width="1.2" stroke-dasharray="2 2"/>
+        <circle cx="9" cy="9" r="3" fill="#8b2417"/>
+        <polygon points="27,5 32,13 22,13" fill="#1a3a5c"/>
+        <rect x="6" y="24" width="6" height="6" fill="#3d5a3a"/>
+      </svg>
+      <div class="divider"></div>
+      <!-- II. Symbol search -->
+      <svg width="36" height="36" viewBox="0 0 36 36">
+        <circle cx="14" cy="18" r="9" fill="none" stroke="#1a1814" stroke-width="1.4"/>
+        <line x1="20" y1="24" x2="30" y2="32" stroke="#1a1814" stroke-width="2" stroke-linecap="round"/>
+        <polygon points="14,12 18,22 10,22" fill="#8b2417"/>
+      </svg>
+      <div class="divider"></div>
+      <!-- III. Puzzle -->
+      <svg width="36" height="36" viewBox="0 0 36 36">
+        <polygon points="18,3 33,18 18,33 3,18" fill="none" stroke="#1a1814" stroke-width="1.2"/>
+        <polygon points="18,3 28,13 18,18 8,13" fill="#8b2417" opacity="0.85"/>
+        <polygon points="18,33 28,23 18,18 8,23" fill="#1a3a5c" opacity="0.85"/>
+      </svg>
+      <div class="divider"></div>
+      <!-- IV. Balance scale -->
+      <svg width="36" height="36" viewBox="0 0 36 36">
+        <line x1="18" y1="8" x2="18" y2="30" stroke="#1a1814" stroke-width="1.4"/>
+        <line x1="6" y1="10" x2="30" y2="10" stroke="#1a1814" stroke-width="1.4"/>
+        <path d="M 2 14 Q 6 18 10 14" fill="none" stroke="#1a1814" stroke-width="1.2"/>
+        <path d="M 26 14 Q 30 18 34 14" fill="none" stroke="#1a1814" stroke-width="1.2"/>
+        <line x1="6" y1="10" x2="6" y2="14" stroke="#1a1814" stroke-width="1"/>
+        <line x1="30" y1="10" x2="30" y2="14" stroke="#1a1814" stroke-width="1"/>
+        <polygon points="18,30 14,33 22,33" fill="#1a1814"/>
+        <circle cx="6" cy="12" r="2" fill="#8b2417"/>
+        <circle cx="30" cy="12" r="2" fill="#3d5a3a"/>
+      </svg>
+      <div class="divider"></div>
+      <!-- V. Digit span / memory -->
+      <svg width="36" height="36" viewBox="0 0 36 36">
+        <text x="6"  y="14" font-family="Cormorant Garamond, serif" font-style="italic" font-size="11" fill="#1a1814" opacity="0.35">3</text>
+        <text x="14" y="14" font-family="Cormorant Garamond, serif" font-style="italic" font-size="13" fill="#1a1814" opacity="0.6">7</text>
+        <text x="22" y="14" font-family="Cormorant Garamond, serif" font-style="italic" font-size="15" fill="#1a1814">1</text>
+        <text x="6"  y="28" font-family="Cormorant Garamond, serif" font-style="italic" font-size="15" fill="#8b2417">9</text>
+        <text x="15" y="28" font-family="Cormorant Garamond, serif" font-style="italic" font-size="13" fill="#1a1814" opacity="0.6">4</text>
+        <text x="24" y="28" font-family="Cormorant Garamond, serif" font-style="italic" font-size="11" fill="#1a1814" opacity="0.35">2</text>
+      </svg>
+    </div>
+
+    <p class="cover-lede">
+      五項以認知能力為主題的小測驗，<br>
+      探索<em>推理</em>、<em>速度</em>、<em>空間</em>、<em>量化</em>、<em>記憶</em>五種思維方式如何各自運作。
+      <br><br>
+      本網頁僅以 WAIS 五個分測驗的「測量概念」為靈感，所有題目皆為原創設計。
+      <strong style="color: var(--accent); font-weight: 600;">不能</strong>產生 IQ 分數、不能用於診斷，
+      純粹是讓你體驗這幾類認知能力被測量起來的感覺。
+    </p>
+
+    <!-- Subtest preview row -->
+    <div class="cover-preview">
+      <div class="preview-cell">
+        <div class="pr-roman">I</div>
+        <div class="pr-name">矩陣推理</div>
+        <div class="pr-en">Matrix Reasoning</div>
+      </div>
+      <div class="preview-cell">
+        <div class="pr-roman">II</div>
+        <div class="pr-name">符號尋找</div>
+        <div class="pr-en">Symbol Search</div>
+      </div>
+      <div class="preview-cell">
+        <div class="pr-roman">III</div>
+        <div class="pr-name">視覺拼圖</div>
+        <div class="pr-en">Visual Puzzles</div>
+      </div>
+      <div class="preview-cell">
+        <div class="pr-roman">IV</div>
+        <div class="pr-name">圖形等重</div>
+        <div class="pr-en">Figure Weights</div>
+      </div>
+      <div class="preview-cell">
+        <div class="pr-roman">V</div>
+        <div class="pr-name">記憶廣度</div>
+        <div class="pr-en">Digit Span</div>
+      </div>
+    </div>
+
+    <div class="cover-cta">
+      <button onclick="enterMenu()">Begin · 開 始 體 驗</button>
+      <div class="note">約 8 – 12 分鐘 · 29 題</div>
+    </div>
+
+    <div class="cover-sig">
+      <span class="seal">Anthropic · Claude</span>
+      <span>Original Items · 原 創 題 目</span>
+      <span>Printed in MMXXVI</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- =================== MASTHEAD =================== -->
+<header class="masthead">
+  <div class="left">No. 04 — 2026<br>Anthropic Lab</div>
+  <div class="title">
+    <h1>Cognitive Battery</h1>
+    <div class="sub">認 知 能 力 小 測 驗</div>
+  </div>
+  <div class="right">原創題目 · 非標準化測驗<br>Original Items</div>
+</header>
+
+<!-- =================== MENU SCREEN =================== -->
+<section id="menu" class="screen">
+  <div class="disclaimer">
+    <strong>說明：</strong>本網頁僅以 WAIS 四個分測驗的「測量概念」為靈感，所有題目皆為原創設計，與任何標準化測驗的實際題目無關。
+    本測驗<strong>不能</strong>產生 IQ 分數、不能用於診斷、不具有任何臨床意義，純粹是讓你體驗「這幾類認知能力被測量起來的感覺」。
+  </div>
+
+  <div class="menu-grid">
+    <div class="menu-card" onclick="startTest('matrix')">
+      <div class="card-inner">
+        <div class="roman">I</div>
+        <h2>矩陣推理</h2>
+        <div class="construct">Fluid Reasoning · 流體推理</div>
+        <p>觀察一組依規則排列的圖形，推斷缺失位置應該是什麼。測量歸納推理與抽象問題解決能力。</p>
+      </div>
+    </div>
+
+    <div class="menu-card" onclick="startTest('symbol')">
+      <div class="card-inner">
+        <div class="roman">II</div>
+        <h2>符號尋找</h2>
+        <div class="construct">Processing Speed · 處理速度</div>
+        <p>在一組符號中快速判斷目標符號是否出現。每題有時間限制，測量視覺辨識的速度與正確性。</p>
+      </div>
+    </div>
+
+    <div class="menu-card" onclick="startTest('puzzle')">
+      <div class="card-inner">
+        <div class="roman">III</div>
+        <h2>視覺拼圖</h2>
+        <div class="construct">Visual-Spatial · 視覺空間</div>
+        <p>從幾個碎片中選出能組成完整目標圖形的那一組。在心中「拼合」圖形，測量視覺空間建構能力。</p>
+      </div>
+    </div>
+
+    <div class="menu-card" onclick="startTest('weight')">
+      <div class="card-inner">
+        <div class="roman">IV</div>
+        <h2>圖形等重</h2>
+        <div class="construct">Quantitative Reasoning · 量化推理</div>
+        <p>從一組等量關係中推算出新天平要放什麼才能平衡。測量量化與類比推理能力。</p>
+      </div>
+    </div>
+
+    <div class="menu-card" onclick="startTest('memory')">
+      <div class="card-inner">
+        <div class="roman">V</div>
+        <h2>記憶廣度</h2>
+        <div class="construct">Working Memory · 工作記憶</div>
+        <p>數字依序閃現在畫面上，再以順序、逆序或排序的方式輸入。測量短期記憶容量與心理操作能力。</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align: center; margin-top: 40px;">
+    <button class="primary" onclick="startAll()">依序進行五項測驗</button>
+    <div style="margin-top: 20px;">
+      <a href="#" onclick="event.preventDefault(); goCover();" style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 2px;">← 返 回 首 頁</a>
+    </div>
+  </div>
+</section>
+
+<!-- =================== TEST SCREEN =================== -->
+<section id="test" class="screen">
+  <div class="test-header">
+    <div class="title-block">
+      <h2 id="test-title">—</h2>
+      <div class="meta" id="test-meta">—</div>
+    </div>
+    <div class="progress">
+      第 <span class="num" id="q-current">1</span> / <span id="q-total">5</span> 題
+    </div>
+  </div>
+
+  <div class="instructions" id="instructions"></div>
+
+  <div id="timer-container" style="display:none;">
+    <div class="timer-bar"><div class="timer-fill" id="timer-fill"></div></div>
+  </div>
+
+  <div class="question-area" id="question-area"></div>
+
+  <div class="controls">
+    <button onclick="goMenu()">返回目錄</button>
+    <div class="feedback" id="feedback"></div>
+    <button class="primary" id="next-btn" onclick="nextQuestion()" disabled>下一題 →</button>
+  </div>
+</section>
+
+<!-- =================== RESULTS SCREEN =================== -->
+<section id="results" class="screen">
+  <div class="test-header">
+    <div class="title-block">
+      <h2 id="results-title">測驗結果</h2>
+      <div class="meta">Results · 結果摘要</div>
+    </div>
+  </div>
+
+  <table class="results-table" id="results-table"></table>
+
+  <div class="results-summary" id="results-summary"></div>
+
+  <div style="margin-top: 32px; text-align: center;">
+    <button class="primary" onclick="goMenu()">回到目錄</button>
+  </div>
+</section>
+
+</div>
+
+<script>
+// ==================================================
+// SVG GENERATORS
+// ==================================================
+
+function svgShape(shape, color, size = 30) {
+  const half = size / 2;
+  switch(shape) {
+    case 'circle':
+      return `<circle cx="0" cy="0" r="${half}" fill="${color}" />`;
+    case 'square':
+      return `<rect x="-${half}" y="-${half}" width="${size}" height="${size}" fill="${color}" />`;
+    case 'triangle':
+      return `<polygon points="0,-${half} ${half},${half} -${half},${half}" fill="${color}" />`;
+    case 'diamond':
+      return `<polygon points="0,-${half} ${half},0 0,${half} -${half},0" fill="${color}" />`;
+    case 'hex':
+      return `<polygon points="${half},0 ${half/2},${half*0.87} -${half/2},${half*0.87} -${half},0 -${half/2},-${half*0.87} ${half/2},-${half*0.87}" fill="${color}" />`;
+    case 'star':
+      let pts = '';
+      for (let i = 0; i < 10; i++) {
+        const r = i % 2 === 0 ? half : half * 0.45;
+        const a = (i * 36 - 90) * Math.PI / 180;
+        pts += `${Math.cos(a)*r},${Math.sin(a)*r} `;
+      }
+      return `<polygon points="${pts}" fill="${color}" />`;
+    case 'cross':
+      return `<path d="M -${half} -${half/3} L -${half/3} -${half/3} L -${half/3} -${half} L ${half/3} -${half} L ${half/3} -${half/3} L ${half} -${half/3} L ${half} ${half/3} L ${half/3} ${half/3} L ${half/3} ${half} L -${half/3} ${half} L -${half/3} ${half/3} L -${half} ${half/3} Z" fill="${color}" />`;
+    case 'empty':
+      return '';
+  }
+  return '';
+}
+
+// ==================================================
+// SHAPE GROUP LAYOUT — auto-grid that fits any number of shapes inside a cell
+// ==================================================
+// Given a list of shape objects ({shape, color}) and a cell at (x, y) with size `size`,
+// automatically determines a grid (cols × rows) and shape size that fits all shapes
+// inside the cell with margin. Returns SVG markup string.
+function renderShapeGroup(items, x, y, size) {
+  const n = items.length;
+  if (n === 0) return '';
+
+  // Choose grid columns based on count
+  let cols;
+  if (n <= 1) cols = 1;
+  else if (n <= 2) cols = 2;
+  else if (n <= 4) cols = 2;
+  else if (n <= 6) cols = 3;
+  else if (n <= 9) cols = 3;
+  else if (n <= 12) cols = 4;
+  else cols = Math.ceil(Math.sqrt(n));
+
+  const rows = Math.ceil(n / cols);
+  const padding = size * 0.08;
+  const usableW = size - padding * 2;
+  const usableH = size - padding * 2;
+  const cellW = usableW / cols;
+  const cellH = usableH / rows;
+  // shape size = min cell dimension * 0.85 (gives breathing room)
+  const shapeSize = Math.min(cellW, cellH) * 0.78;
+
+  let out = '';
+  items.forEach((cell, i) => {
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    // Center remaining items in last row if not full
+    const itemsInThisRow = (row === rows - 1) ? (n - row * cols) : cols;
+    const rowOffset = (cols - itemsInThisRow) * cellW / 2;
+    const cx = x + padding + rowOffset + col * cellW + cellW / 2;
+    const cy = y + padding + row * cellH + cellH / 2;
+    out += `<g transform="translate(${cx},${cy})">${svgShape(cell.shape, cell.color, shapeSize)}</g>`;
+  });
+  return out;
+}
+
+// ==================================================
+// TEST DEFINITIONS
+// ==================================================
+
+const TESTS = {
+  matrix: {
+    title: '矩陣推理',
+    meta: 'Matrix Reasoning · Subtest I',
+    instructions: [
+      '畫面上會出現一個 2×2 或 3×3 的圖形矩陣，其中一格是空白（標示為「？」）。',
+      '請觀察其他格子之間的規律——可能跟形狀、顏色、數量、方向或位置有關——然後從下方五個選項中，選出最合適填入空格的圖形。'
+    ],
+    items: [
+      // Q1: 3x3 — TWO dimensions vary simultaneously (shape across rows, color across columns)
+      {
+        type: 'matrix-3x3-simple',
+        cells: [
+          {shape:'circle', color:'#8b2417'},   {shape:'circle', color:'#1a3a5c'},   {shape:'circle', color:'#3d5a3a'},
+          {shape:'square', color:'#8b2417'},   {shape:'square', color:'#1a3a5c'},   {shape:'square', color:'#3d5a3a'},
+          {shape:'triangle', color:'#8b2417'}, {shape:'triangle', color:'#1a3a5c'}, null
+        ],
+        choices: [
+          {shape:'square', color:'#3d5a3a'},
+          {shape:'triangle', color:'#1a3a5c'},
+          {shape:'triangle', color:'#3d5a3a'},
+          {shape:'circle', color:'#3d5a3a'},
+          {shape:'triangle', color:'#8b2417'}
+        ],
+        answer: 2,
+        explain: '每列形狀固定（圓/方/三角），每行顏色固定（紅/藍/綠）。缺角應為綠色三角。'
+      },
+      // Q2: 3x3 — XOR-like logic. Column 3 = (Column 1 elements + Column 2 elements) but shared ones cancel
+      // Simpler version: count rule — number of items in cell (row,col) follows (row+col) mod or similar
+      // Let's do: shape position rotates AND count varies
+      {
+        type: 'matrix-3x3',
+        cells: [
+          [{shape:'star', color:'#1a3a5c'}],
+          [{shape:'star', color:'#1a3a5c'},{shape:'star', color:'#1a3a5c'}],
+          [{shape:'star', color:'#1a3a5c'},{shape:'star', color:'#1a3a5c'},{shape:'star', color:'#1a3a5c'}],
+
+          [{shape:'star', color:'#1a3a5c'},{shape:'star', color:'#1a3a5c'},{shape:'star', color:'#1a3a5c'}],
+          [{shape:'star', color:'#1a3a5c'}],
+          [{shape:'star', color:'#1a3a5c'},{shape:'star', color:'#1a3a5c'}],
+
+          [{shape:'star', color:'#1a3a5c'},{shape:'star', color:'#1a3a5c'}],
+          [{shape:'star', color:'#1a3a5c'},{shape:'star', color:'#1a3a5c'},{shape:'star', color:'#1a3a5c'}],
+          null
+        ],
+        choices: [
+          [{shape:'star', color:'#1a3a5c'}],
+          [{shape:'star', color:'#1a3a5c'},{shape:'star', color:'#1a3a5c'}],
+          [{shape:'star', color:'#1a3a5c'},{shape:'star', color:'#1a3a5c'},{shape:'star', color:'#1a3a5c'}],
+          [{shape:'circle', color:'#1a3a5c'}],
+          [{shape:'star', color:'#8b2417'}]
+        ],
+        answer: 0,
+        explain: '每列、每行都各包含 1、2、3 顆星各一次（拉丁方陣結構）。最後一格需為 1 顆星。'
+      },
+      // Q3: 3x3 — three attributes (shape, color, count) all varying with Latin square structure
+      {
+        type: 'matrix-3x3',
+        cells: [
+          [{shape:'circle', color:'#8b2417'}],
+          [{shape:'square', color:'#1a3a5c'},{shape:'square', color:'#1a3a5c'}],
+          [{shape:'triangle', color:'#3d5a3a'},{shape:'triangle', color:'#3d5a3a'},{shape:'triangle', color:'#3d5a3a'}],
+
+          [{shape:'square', color:'#3d5a3a'},{shape:'square', color:'#3d5a3a'},{shape:'square', color:'#3d5a3a'}],
+          [{shape:'triangle', color:'#8b2417'}],
+          [{shape:'circle', color:'#1a3a5c'},{shape:'circle', color:'#1a3a5c'}],
+
+          [{shape:'triangle', color:'#1a3a5c'},{shape:'triangle', color:'#1a3a5c'}],
+          [{shape:'circle', color:'#3d5a3a'},{shape:'circle', color:'#3d5a3a'},{shape:'circle', color:'#3d5a3a'}],
+          null
+        ],
+        choices: [
+          [{shape:'square', color:'#8b2417'}],
+          [{shape:'triangle', color:'#8b2417'}],
+          [{shape:'square', color:'#1a3a5c'}],
+          [{shape:'square', color:'#8b2417'},{shape:'square', color:'#8b2417'}],
+          [{shape:'circle', color:'#8b2417'}]
+        ],
+        answer: 0,
+        explain: '每列、每行需各包含三種形狀、三種顏色、三種數量各一次。最後一格需為紅色方塊 × 1。'
+      },
+      // Q4: 3x3 — double Latin square (shape AND color both follow non-trivial permutation)
+      {
+        type: 'matrix-3x3-simple',
+        cells: [
+          {shape:'star', color:'#8b2417'},   {shape:'hex', color:'#1a3a5c'},    {shape:'diamond', color:'#3d5a3a'},
+          {shape:'hex', color:'#3d5a3a'},    {shape:'diamond', color:'#8b2417'},{shape:'star', color:'#1a3a5c'},
+          {shape:'diamond', color:'#1a3a5c'},{shape:'star', color:'#3d5a3a'},   null
+        ],
+        choices: [
+          {shape:'hex', color:'#8b2417'},
+          {shape:'star', color:'#8b2417'},
+          {shape:'hex', color:'#1a3a5c'},
+          {shape:'diamond', color:'#3d5a3a'},
+          {shape:'hex', color:'#3d5a3a'}
+        ],
+        answer: 0,
+        explain: '形狀與顏色各自構成拉丁方陣（每列、每行三種形狀各一、三種顏色各一）。已用形狀是鑽石、星，缺六邊形；已用顏色是藍、綠，缺紅。故為紅色六邊形。'
+      },
+      // Q5: hardest — XOR / progressive logic.
+      // Rule: in each row, the count in the third cell = count_cell1 + count_cell2 (additive).
+      // Also: shape follows a cyclic pattern.
+      {
+        type: 'matrix-3x3',
+        cells: [
+          [{shape:'diamond', color:'#8b2417'}],
+          [{shape:'diamond', color:'#8b2417'},{shape:'diamond', color:'#8b2417'}],
+          [{shape:'diamond', color:'#8b2417'},{shape:'diamond', color:'#8b2417'},{shape:'diamond', color:'#8b2417'}],
+
+          [{shape:'hex', color:'#8b2417'},{shape:'hex', color:'#8b2417'}],
+          [{shape:'hex', color:'#8b2417'},{shape:'hex', color:'#8b2417'},{shape:'hex', color:'#8b2417'}],
+          [{shape:'hex', color:'#8b2417'},{shape:'hex', color:'#8b2417'},{shape:'hex', color:'#8b2417'},{shape:'hex', color:'#8b2417'},{shape:'hex', color:'#8b2417'}],
+
+          [{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'}],
+          [{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'}],
+          null
+        ],
+        choices: [
+          [{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'}],
+          [{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'}],
+          [{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'}],
+          [{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'},{shape:'star', color:'#8b2417'}],
+          [{shape:'hex', color:'#8b2417'},{shape:'hex', color:'#8b2417'},{shape:'hex', color:'#8b2417'},{shape:'hex', color:'#8b2417'},{shape:'hex', color:'#8b2417'},{shape:'hex', color:'#8b2417'},{shape:'hex', color:'#8b2417'}]
+        ],
+        answer: 0,
+        explain: '每行形狀固定，每列數量遵循「第一格 + 第二格 = 第三格」（1+2=3、2+3=5、3+4=7）。最後一格應為 7 顆星。'
+      }
+    ]
+  },
+
+  symbol: {
+    title: '符號尋找',
+    meta: 'Symbol Search · Subtest II',
+    instructions: [
+      '畫面上方會出現 1 到 2 個「目標符號」，下方有 5 個選項符號。',
+      '請從選項中找出所有跟目標相同的符號（可能 0 個、1 個或 2 個都有）。如果完全沒有，請點「沒有」。',
+      '每題限時 10 秒，請盡量又快又準。'
+    ],
+    items: [
+      // answer: array of indices of matching options; empty array means "none"
+      {targets:['circle'], options:['square','diamond','star','hex','cross'], answer:[]},
+      {targets:['star','triangle'], options:['hex','diamond','star','triangle','cross'], answer:[2,3]},
+      {targets:['hex'], options:['circle','triangle','square','cross','diamond'], answer:[]},
+      {targets:['cross','circle'], options:['hex','diamond','square','circle','cross'], answer:[3,4]},
+      {targets:['triangle'], options:['hex','square','triangle','star','circle'], answer:[2]},
+      {targets:['diamond','square'], options:['cross','diamond','triangle','hex','circle'], answer:[1]},
+      {targets:['square','cross'], options:['hex','triangle','diamond','star','circle'], answer:[]},
+      {targets:['hex','star'], options:['triangle','star','hex','diamond','cross'], answer:[1,2]},
+      {targets:['star'], options:['circle','square','diamond','hex','cross'], answer:[]},
+      {targets:['circle','diamond'], options:['hex','circle','triangle','square','diamond'], answer:[1,4]}
+    ]
+  },
+
+  puzzle: {
+    title: '視覺拼圖',
+    meta: 'Visual Puzzles · Subtest III',
+    instructions: [
+      '上方會顯示一個完整的目標圖形。',
+      '下方有 6 個碎片選項，請從中選出「恰好 3 個」能完整拼出目標圖形的碎片。',
+      '碎片之間不能重疊、不能旋轉，只能像拼圖一樣完整覆蓋目標。'
+    ],
+    // Each target and piece is defined by an array of unit rectangles [x, y, w, h] on a grid.
+    // Grid dimensions are specified per item.
+    items: [
+      // Q1: L-shape on 4x4 grid (7 cells)
+      {
+        gridW: 4, gridH: 4,
+        target: [[0,0,1,4],[1,3,3,1]],
+        choices: [
+          {rects: [[0,0,1,4]]},                  // 0 ✓ 左直立 1×4
+          {rects: [[1,3,2,1]]},                  // 1 ✓ 底中段 2×1
+          {rects: [[3,3,1,1]]},                  // 2 ✓ 右下角 1×1
+          {rects: [[0,0,2,2]]},                  // 3 干擾：左上 2×2 方塊
+          {rects: [[0,2,2,2]]},                  // 4 干擾：左下 2×2 方塊
+          {rects: [[0,0,4,1]]}                   // 5 干擾：頂列 4×1 長條
+        ],
+        answer: [0, 1, 2],
+        explain: '左直立矩形（1×4）+ 底中段矩形（2×1）+ 右下角方塊（1×1）= L 形。'
+      },
+      // Q2: Plus/Cross on 5x5 grid (9 cells)
+      {
+        gridW: 5, gridH: 5,
+        target: [[2,0,1,5],[0,2,5,1]],
+        choices: [
+          {rects: [[2,0,1,2]]},                  // 0 ✓ 上臂 1×2
+          {rects: [[0,2,5,1]]},                  // 1 ✓ 整條水平 5×1
+          {rects: [[2,3,1,2]]},                  // 2 ✓ 下臂 1×2
+          {rects: [[2,1,1,3]]},                  // 3 干擾：垂直 1×3（會跟水平條重疊）
+          {rects: [[0,2,2,1],[3,2,2,1]]},        // 4 干擾：左右半條（缺中心）
+          {rects: [[2,0,1,5]]}                   // 5 干擾：整條垂直 1×5
+        ],
+        answer: [0, 1, 2],
+        explain: '上臂（1×2）+ 整條水平（5×1，含中心）+ 下臂（1×2）= 十字形。'
+      },
+      // Q3: T-shape on 3x3 grid (5 cells)
+      {
+        gridW: 3, gridH: 3,
+        target: [[0,0,3,1],[1,1,1,2]],
+        choices: [
+          {rects: [[0,0,3,1]]},                  // 0 ✓ 頂列 3×1
+          {rects: [[1,1,1,1]]},                  // 1 ✓ 中柱
+          {rects: [[1,2,1,1]]},                  // 2 ✓ 底柱
+          {rects: [[1,1,1,2]]},                  // 3 干擾：整條中柱 1×2（會跟其他兩片之一重疊）
+          {rects: [[0,1,3,1]]},                  // 4 干擾：第二列 3×1
+          {rects: [[0,0,1,3]]}                   // 5 干擾：左欄 1×3
+        ],
+        answer: [0, 1, 2],
+        explain: '頂列（3×1）+ 中央兩個方塊（1×1 各一）= T 形。'
+      },
+      // Q4: Staircase on 3x3 grid (6 cells)
+      {
+        gridW: 3, gridH: 3,
+        target: [[0,2,3,1],[1,1,2,1],[2,0,1,1]],
+        choices: [
+          {rects: [[0,2,3,1]]},                  // 0 ✓ 底列 3×1
+          {rects: [[1,1,2,1]]},                  // 1 ✓ 中列 2×1
+          {rects: [[2,0,1,1]]},                  // 2 ✓ 右上角 1×1
+          {rects: [[0,0,3,1]]},                  // 3 干擾：頂列 3×1
+          {rects: [[0,0,1,3]]},                  // 4 干擾：左欄 1×3
+          {rects: [[1,1,2,2]]}                   // 5 干擾：右下 2×2 方塊
+        ],
+        answer: [0, 1, 2],
+        explain: '底列（3×1）+ 中列（2×1）+ 右上角（1×1）= 三階階梯。'
+      },
+      // Q5: P-shape on 3x4 grid (8 cells)
+      {
+        gridW: 3, gridH: 4,
+        target: [[0,0,1,4],[1,0,2,2]],
+        choices: [
+          {rects: [[0,0,1,4]]},                  // 0 ✓ 左直立 1×4
+          {rects: [[1,0,2,1]]},                  // 1 ✓ 右上水平 2×1
+          {rects: [[1,1,2,1]]},                  // 2 ✓ 右中水平 2×1
+          {rects: [[1,0,2,2]]},                  // 3 干擾：右上 2×2 方塊（會跟其他兩片重疊）
+          {rects: [[1,2,2,2]]},                  // 4 干擾：右下 2×2 方塊
+          {rects: [[0,3,3,1]]}                   // 5 干擾：底列 3×1
+        ],
+        answer: [0, 1, 2],
+        explain: '左直立（1×4）+ 右上水平條（2×1）+ 右中水平條（2×1）= P 形。'
+      }
+    ]
+  },
+
+  weight: {
+    title: '圖形等重',
+    meta: 'Figure Weights · Subtest IV',
+    instructions: [
+      '畫面會顯示一個或兩個已經平衡的天平，告訴你不同圖形之間的「重量關係」。',
+      '最後一個天平的右邊是空的，請從下方選項中，選出可以讓它平衡的那一組圖形。',
+      '所有相同圖形的重量都相同，請用代數的方式推理。'
+    ],
+    items: [
+      // Q1: two-step transitivity
+      {
+        balanced: [
+          {left:['triangle'], right:['circle','circle']},
+          {left:['circle'], right:['square','square']}
+        ],
+        question: {left:['triangle'], right:'?'},
+        choices: [
+          ['square','square'],
+          ['square','square','square'],
+          ['square','square','square','square'],
+          ['square','square','square','square','square'],
+          ['circle','square']
+        ],
+        answer: 2,
+        explain: '1 △ = 2 圓，1 圓 = 2 方，所以 1 △ = 4 方。'
+      },
+      // Q2: mixed equation requiring substitution
+      {
+        balanced: [
+          {left:['circle','square'], right:['triangle','triangle','triangle']},
+          {left:['square'], right:['triangle']}
+        ],
+        question: {left:['circle','circle'], right:'?'},
+        choices: [
+          ['triangle','triangle'],
+          ['triangle','triangle','triangle'],
+          ['triangle','triangle','triangle','triangle'],
+          ['square','triangle'],
+          ['triangle']
+        ],
+        answer: 2,
+        explain: '由 □ = △ 代入 ○ + □ = 3△，得 ○ = 2△。所以 2○ = 4△。'
+      },
+      // Q3: three-step chain
+      {
+        balanced: [
+          {left:['hex'], right:['triangle','triangle']},
+          {left:['triangle'], right:['circle','circle','circle']},
+          {left:['circle'], right:['square','square']}
+        ],
+        question: {left:['hex'], right:'?'},
+        choices: [
+          ['square','square','square','square','square','square'],
+          ['square','square','square','square','square','square','square','square'],
+          ['square','square','square','square','square','square','square','square','square','square','square','square'],
+          ['square','square','square','square'],
+          ['circle','circle','circle']
+        ],
+        answer: 2,
+        explain: '1 六 = 2 △ = 6 圓 = 12 方。'
+      },
+      // Q4: cross-substitution with two unknowns on each side
+      {
+        balanced: [
+          {left:['hex','hex','circle'], right:['square','square','square','square','square']},
+          {left:['hex'], right:['circle','square']}
+        ],
+        question: {left:['hex','circle'], right:'?'},
+        choices: [
+          ['square','square'],
+          ['square','square','square'],
+          ['square','square','square','square'],
+          ['square','square','square','square','square'],
+          ['hex','square']
+        ],
+        answer: 1,
+        explain: '由式 2：六 = 圓 + 方。代入式 1：2(圓+方) + 圓 = 5 方 → 3 圓 = 3 方 → 圓 = 方。所以六 = 2 方，六 + 圓 = 3 方。'
+      },
+      // Q5: hardest — three equations, pre-solved parameters: triangle=1, diamond=2, star=5
+      // Eq1: star = diamond + 3 triangles   →  5 = 2 + 3 ✓
+      // Eq2: star + triangle = 3 diamonds   →  6 = 6 ✓
+      // Eq3: 2 diamonds + triangle = star   →  5 = 5 ✓ (derivable from Eq1)
+      // Question: 2 stars = ? Answer: 10 triangles = 5 diamonds. Best unique form: 5 diamonds.
+      // Check all options against value 10:
+      //   A: 2 diamonds + 4 triangles = 4 + 4 = 8  ✗
+      //   B: 4 diamonds + triangle    = 8 + 1 = 9  ✗
+      //   C: 5 diamonds                = 10        ✓ UNIQUE
+      //   D: 3 diamonds + 3 triangles = 6 + 3 = 9  ✗
+      //   E: diamond + 7 triangles    = 2 + 7 = 9  ✗
+      {
+        balanced: [
+          {left:['star'], right:['diamond','triangle','triangle','triangle']},
+          {left:['star','triangle'], right:['diamond','diamond','diamond']},
+          {left:['diamond','diamond','triangle'], right:['star']}
+        ],
+        question: {left:['star','star'], right:'?'},
+        choices: [
+          ['diamond','diamond','triangle','triangle','triangle','triangle'],
+          ['diamond','diamond','diamond','diamond','triangle'],
+          ['diamond','diamond','diamond','diamond','diamond'],
+          ['diamond','diamond','diamond','triangle','triangle','triangle'],
+          ['diamond','triangle','triangle','triangle','triangle','triangle','triangle','triangle']
+        ],
+        answer: 2,
+        explain: '設 ▲ 為單位。由式 1：★ = ◇ + 3▲；由式 2：★ + ▲ = 3◇ → ★ = 3◇ − ▲。聯立：◇ + 3▲ = 3◇ − ▲ → ◇ = 2▲，代回得 ★ = 5▲。所以 2★ = 10▲ = 5◇。'
+      }
+    ]
+  },
+
+  memory: {
+    title: '記憶廣度',
+    meta: 'Digit Span · Subtest V',
+    instructions: [
+      '畫面中央會依序閃現一串數字，請記住它們。',
+      '每題分為三種模式：「順序」依原本順序輸入、「逆序」依相反順序輸入、「排序」由小到大重排後輸入。',
+      '所有數字閃完後，下方會出現數字鍵盤供你輸入答案。'
+    ],
+    items: [
+      // 順序 × 2
+      {mode: 'forward', sequence: [4, 9, 2, 7, 1], expected: [4, 9, 2, 7, 1]},
+      {mode: 'forward', sequence: [3, 8, 1, 6, 9, 2, 5], expected: [3, 8, 1, 6, 9, 2, 5]},
+      // 逆序 × 2
+      {mode: 'backward', sequence: [5, 2, 8, 6], expected: [6, 8, 2, 5]},
+      {mode: 'backward', sequence: [7, 1, 4, 9, 3, 8], expected: [8, 3, 9, 4, 1, 7]},
+      // 排序 × 2
+      {mode: 'sorted', sequence: [6, 2, 9, 4, 1], expected: [1, 2, 4, 6, 9]},
+      {mode: 'sorted', sequence: [8, 3, 7, 1, 5, 4], expected: [1, 3, 4, 5, 7, 8]}
+    ]
+  }
+};
+
+// ==================================================
+// STATE
+// ==================================================
+
+let state = {
+  currentTest: null,
+  currentItem: 0,
+  selected: null,
+  answered: false,
+  scores: {matrix:0, symbol:0, puzzle:0, weight:0, memory:0},
+  totals: {matrix:0, symbol:0, puzzle:0, weight:0, memory:0},
+  sequence: null,
+  seqIdx: 0,
+  timer: null,
+  timeLeft: 0
+};
+
+// ==================================================
+// NAVIGATION
+// ==================================================
+
+function startTest(testKey) {
+  state.currentTest = testKey;
+  state.currentItem = 0;
+  state.sequence = null;
+  state.scores[testKey] = 0;
+  state.totals[testKey] = TESTS[testKey].items.length;
+  showScreen('test');
+  renderTest();
+}
+
+function startAll() {
+  state.sequence = ['matrix','symbol','puzzle','weight','memory'];
+  state.seqIdx = 0;
+  Object.keys(state.scores).forEach(k => state.scores[k] = 0);
+  state.currentTest = state.sequence[0];
+  state.currentItem = 0;
+  state.totals[state.currentTest] = TESTS[state.currentTest].items.length;
+  showScreen('test');
+  renderTest();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen, .cover').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  // Cover page hides the masthead; other screens show it
+  if (id === 'cover') {
+    document.body.classList.add('show-cover');
+  } else {
+    document.body.classList.remove('show-cover');
+  }
+}
+
+function enterMenu() {
+  showScreen('menu');
+  // Smooth scroll to top so masthead is in view
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function goMenu() {
+  clearTimer();
+  showScreen('menu');
+}
+
+function goCover() {
+  clearTimer();
+  showScreen('cover');
+}
+
+function nextQuestion() {
+  clearTimer();
+  state.currentItem++;
+  const test = TESTS[state.currentTest];
+  if (state.currentItem >= test.items.length) {
+    // test done
+    if (state.sequence && state.seqIdx < state.sequence.length - 1) {
+      state.seqIdx++;
+      state.currentTest = state.sequence[state.seqIdx];
+      state.currentItem = 0;
+      state.totals[state.currentTest] = TESTS[state.currentTest].items.length;
+      renderTest();
+    } else {
+      showResults();
+    }
+    return;
+  }
+  renderTest();
+}
+
+// ==================================================
+// RENDER TEST
+// ==================================================
+
+function renderTest() {
+  const test = TESTS[state.currentTest];
+  const item = test.items[state.currentItem];
+  state.selected = null;
+  state.answered = false;
+
+  document.getElementById('test-title').textContent = test.title;
+  document.getElementById('test-meta').textContent = test.meta;
+  document.getElementById('q-current').textContent = state.currentItem + 1;
+  document.getElementById('q-total').textContent = test.items.length;
+  document.getElementById('instructions').innerHTML = test.instructions.map(p => `<p>${p}</p>`).join('');
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('next-btn').disabled = true;
+  document.getElementById('next-btn').textContent = (state.currentItem === test.items.length - 1) ? '完成 →' : '下一題 →';
+
+  const timerC = document.getElementById('timer-container');
+  if (state.currentTest === 'symbol') {
+    timerC.style.display = 'block';
+    startTimer(10);
+  } else {
+    timerC.style.display = 'none';
+  }
+
+  if (state.currentTest === 'matrix') renderMatrix(item);
+  else if (state.currentTest === 'symbol') renderSymbol(item);
+  else if (state.currentTest === 'puzzle') renderPuzzle(item);
+  else if (state.currentTest === 'weight') renderWeight(item);
+  else if (state.currentTest === 'memory') renderMemory(item);
+}
+
+// ==================================================
+// MATRIX RENDER
+// ==================================================
+
+function renderMatrix(item) {
+  const area = document.getElementById('question-area');
+  let svg = '';
+  const cellSize = 80;
+  const gap = 8;
+
+  if (item.type === 'matrix-2x2') {
+    const w = cellSize * 2 + gap;
+    svg = `<svg class="stem-svg" viewBox="0 0 ${w} ${w}" width="${w}" height="${w}">`;
+    for (let i = 0; i < 4; i++) {
+      const x = (i % 2) * (cellSize + gap);
+      const y = Math.floor(i / 2) * (cellSize + gap);
+      svg += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="#fdfaf0" stroke="#8a7e63" stroke-width="1.5"/>`;
+      if (item.cells[i]) {
+        svg += `<g transform="translate(${x + cellSize/2},${y + cellSize/2})">${svgShape(item.cells[i].shape, item.cells[i].color, 40)}</g>`;
+      } else {
+        svg += `<text x="${x + cellSize/2}" y="${y + cellSize/2 + 8}" font-family="Cormorant Garamond" font-size="36" font-style="italic" fill="#8b2417" text-anchor="middle">?</text>`;
+      }
+    }
+    svg += '</svg>';
+  } else if (item.type === 'matrix-3x3' || item.type === 'matrix-3x3-simple') {
+    const w = cellSize * 3 + gap * 2;
+    svg = `<svg class="stem-svg" viewBox="0 0 ${w} ${w}" width="${w}" height="${w}">`;
+    for (let i = 0; i < 9; i++) {
+      const x = (i % 3) * (cellSize + gap);
+      const y = Math.floor(i / 3) * (cellSize + gap);
+      svg += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="#fdfaf0" stroke="#8a7e63" stroke-width="1.5"/>`;
+      if (item.cells[i]) {
+        if (Array.isArray(item.cells[i])) {
+          svg += renderShapeGroup(item.cells[i], x, y, cellSize);
+        } else {
+          svg += `<g transform="translate(${x + cellSize/2},${y + cellSize/2})">${svgShape(item.cells[i].shape, item.cells[i].color, 40)}</g>`;
+        }
+      } else {
+        svg += `<text x="${x + cellSize/2}" y="${y + cellSize/2 + 8}" font-family="Cormorant Garamond" font-size="36" font-style="italic" fill="#8b2417" text-anchor="middle">?</text>`;
+      }
+    }
+    svg += '</svg>';
+  } else if (item.type === 'matrix-rotation') {
+    const w = cellSize * 2 + gap;
+    svg = `<svg class="stem-svg" viewBox="0 0 ${w} ${w}" width="${w}" height="${w}">`;
+    for (let i = 0; i < 4; i++) {
+      const x = (i % 2) * (cellSize + gap);
+      const y = Math.floor(i / 2) * (cellSize + gap);
+      svg += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="#fdfaf0" stroke="#8a7e63" stroke-width="1.5"/>`;
+      if (item.cells[i]) {
+        svg += `<g transform="translate(${x + cellSize/2},${y + cellSize/2}) rotate(${item.cells[i].rotate})">${svgShape(item.cells[i].shape, item.cells[i].color, 40)}</g>`;
+      } else {
+        svg += `<text x="${x + cellSize/2}" y="${y + cellSize/2 + 8}" font-family="Cormorant Garamond" font-size="36" font-style="italic" fill="#8b2417" text-anchor="middle">?</text>`;
+      }
+    }
+    svg += '</svg>';
+  }
+
+  area.innerHTML = svg + '<div class="choices" id="choices"></div>';
+  const choicesDiv = document.getElementById('choices');
+  item.choices.forEach((c, i) => {
+    const labels = ['A','B','C','D','E'];
+    let cSvg;
+    if (Array.isArray(c)) {
+      // Choice with multiple shapes — use auto-grid layout in a 100x100 viewBox
+      const inner = renderShapeGroup(c, 0, 0, 100);
+      cSvg = `<svg viewBox="0 0 100 100" width="70" height="70">${inner}</svg>`;
+    } else if (c.rotate !== undefined) {
+      cSvg = `<svg viewBox="-50 -50 100 100" width="70" height="70"><g transform="rotate(${c.rotate})">${svgShape(c.shape, c.color, 40)}</g></svg>`;
+    } else {
+      cSvg = `<svg viewBox="-50 -50 100 100" width="70" height="70">${svgShape(c.shape, c.color, 40)}</svg>`;
+    }
+    const div = document.createElement('div');
+    div.className = 'choice';
+    div.innerHTML = `${cSvg}<div class="label">${labels[i]}</div>`;
+    div.onclick = () => selectChoice(i, item.answer);
+    choicesDiv.appendChild(div);
+  });
+}
+
+// ==================================================
+// SYMBOL SEARCH RENDER
+// ==================================================
+
+function renderSymbol(item) {
+  const area = document.getElementById('question-area');
+
+  // Render 1 or 2 target symbols (variable name renamed to avoid collision with targetSvg function)
+  const targetCells = item.targets.map(t =>
+    `<div style="display:inline-block; padding: 14px; border: 1.5px solid var(--ink); background: var(--paper); margin: 0 6px;">
+      <svg viewBox="-25 -25 50 50" width="44" height="44">${svgShape(t, '#1a1814', 38)}</svg>
+    </div>`
+  ).join('');
+
+  let optionsHtml = '';
+  item.options.forEach((s, i) => {
+    optionsHtml += `<div class="choice" data-idx="${i}" onclick="symbolToggle(${i})">
+      <svg viewBox="-25 -25 50 50" width="48" height="48">${svgShape(s, '#1a1814', 36)}</svg>
+      <div class="label">${i + 1}</div>
+    </div>`;
+  });
+
+  area.innerHTML = `
+    <div style="text-align:center; margin-bottom: 24px;">
+      <div style="font-family: 'JetBrains Mono'; font-size: 10px; letter-spacing: 0.25em; color: var(--ink-soft); margin-bottom: 12px;">目 標 符 號 · TARGET${item.targets.length > 1 ? 'S' : ''}</div>
+      <div>${targetCells}</div>
+    </div>
+    <div style="font-family: 'JetBrains Mono'; font-size: 10px; letter-spacing: 0.25em; color: var(--ink-soft); text-align:center; margin-bottom: 12px;">選 項 · 找出所有相符的符號</div>
+    <div class="choices" id="choices">
+      ${optionsHtml}
+    </div>
+    <div style="text-align:center; margin-top: 20px; display: flex; gap: 12px; justify-content: center;">
+      <button id="sym-none" onclick="symbolPickNone()">沒有相符</button>
+      <button id="sym-submit" class="primary" onclick="symbolSubmit()">提交答案</button>
+    </div>
+    <p style="text-align: center; margin-top: 12px; font-size: 12px; color: var(--ink-soft);">已選 <span id="sym-count" style="color: var(--accent); font-weight: 600;">0</span> 個</p>
+  `;
+
+  state.symbolSelected = new Set();
+}
+
+function symbolToggle(idx) {
+  if (state.answered) return;
+  const el = document.querySelector(`#choices .choice[data-idx="${idx}"]`);
+  if (state.symbolSelected.has(idx)) {
+    state.symbolSelected.delete(idx);
+    el.classList.remove('selected');
+  } else {
+    state.symbolSelected.add(idx);
+    el.classList.add('selected');
+  }
+  document.getElementById('sym-count').textContent = state.symbolSelected.size;
+}
+
+function symbolPickNone() {
+  if (state.answered) return;
+  // Clear any selections, then submit as empty
+  state.symbolSelected.clear();
+  document.querySelectorAll('#choices .choice').forEach(el => el.classList.remove('selected'));
+  document.getElementById('sym-count').textContent = '0';
+  symbolSubmit();
+}
+
+function symbolSubmit() {
+  if (state.answered) return;
+  clearTimer();
+  state.answered = true;
+
+  const item = TESTS.symbol.items[state.currentItem];
+  const answerSet = new Set(item.answer);
+  const userSet = state.symbolSelected;
+
+  // correct iff sets equal
+  let correct = (userSet.size === answerSet.size);
+  if (correct) {
+    for (const v of userSet) {
+      if (!answerSet.has(v)) { correct = false; break; }
+    }
+  }
+  if (correct) state.scores.symbol++;
+
+  // Highlight: green for correct picks, red for wrong picks, faded green for missed correct answers
+  document.querySelectorAll('#choices .choice').forEach(el => {
+    const idx = parseInt(el.dataset.idx);
+    el.classList.remove('selected');
+    if (userSet.has(idx) && answerSet.has(idx)) {
+      el.classList.add('correct');
+    } else if (userSet.has(idx) && !answerSet.has(idx)) {
+      el.classList.add('wrong');
+    } else if (!userSet.has(idx) && answerSet.has(idx)) {
+      el.classList.add('correct');
+      el.style.opacity = '0.6';
+    }
+    el.style.pointerEvents = 'none';
+  });
+
+  document.getElementById('sym-submit').disabled = true;
+  document.getElementById('sym-none').disabled = true;
+
+  const fb = document.getElementById('feedback');
+  if (correct) {
+    fb.textContent = '正確 · CORRECT';
+    fb.className = 'feedback correct';
+  } else {
+    const ansLabel = answerSet.size === 0 ? '沒有相符' : `第 ${[...answerSet].map(x => x+1).join('、')} 個`;
+    fb.textContent = `不正確 · 答案是「${ansLabel}」`;
+    fb.className = 'feedback wrong';
+  }
+  document.getElementById('next-btn').disabled = false;
+}
+
+// ==================================================
+// TIMER
+// ==================================================
+
+function startTimer(seconds) {
+  state.timeLeft = seconds * 100;
+  const fill = document.getElementById('timer-fill');
+  fill.style.width = '100%';
+  state.timer = setInterval(() => {
+    state.timeLeft--;
+    fill.style.width = (state.timeLeft / (seconds)) + '%';
+    if (state.timeLeft <= 0) {
+      clearTimer();
+      if (!state.answered) {
+        // For symbol search, auto-submit with current selection
+        if (state.currentTest === 'symbol') {
+          const fb = document.getElementById('feedback');
+          symbolSubmit();
+          // override feedback to show timeout
+          if (fb) {
+            const wasCorrect = fb.classList.contains('correct');
+            fb.textContent = wasCorrect ? '時間到（剛好正確）· TIMEOUT' : '時間到 · TIMEOUT';
+          }
+        } else {
+          const fb = document.getElementById('feedback');
+          fb.textContent = '時間到 · TIMEOUT';
+          fb.className = 'feedback wrong';
+          state.answered = true;
+          document.querySelectorAll('#choices .choice').forEach(c => c.style.pointerEvents = 'none');
+          document.getElementById('next-btn').disabled = false;
+        }
+      }
+    }
+  }, 10);
+}
+
+function clearTimer() {
+  if (state.timer) { clearInterval(state.timer); state.timer = null; }
+  // Also clear any pending memory display timeouts
+  if (state.memoryTimeouts) {
+    state.memoryTimeouts.forEach(id => clearTimeout(id));
+    state.memoryTimeouts = [];
+  }
+}
+
+// ==================================================
+// PUZZLE RENDER — grid-based rectangle system
+// ==================================================
+// Both targets and pieces are defined as arrays of unit rectangles [x, y, w, h]
+// on a logical grid of size gridW × gridH. This function renders any rect set
+// on a square SVG canvas, with consistent scaling.
+//
+// Params:
+//   rects: array of [x, y, w, h]
+//   gridW, gridH: logical grid size (so cells align with target's grid)
+//   canvasSize: pixel size of SVG (square)
+//   options.bbox: if true, scale piece to fill canvas using its own bounding box
+//                 (used for choice tiles, where pieces vary in size)
+//                 if false, use the full grid as the canvas (used for target)
+//   options.fill: fill color
+//   options.stroke: stroke color (optional)
+function renderRectsSvg(rects, gridW, gridH, canvasSize, options = {}) {
+  const fill = options.fill || '#1a1814';
+  const stroke = options.stroke || 'rgba(255, 250, 240, 0.6)';
+  const strokeW = options.strokeWidth || 0.04;
+  const padding = canvasSize * 0.08;
+  const usable = canvasSize - padding * 2;
+
+  let originX, originY, scale;
+
+  if (options.bbox) {
+    // Use piece's own bounding box, so piece fills the canvas
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    rects.forEach(([x, y, w, h]) => {
+      if (x < minX) minX = x;
+      if (y < minY) minY = y;
+      if (x + w > maxX) maxX = x + w;
+      if (y + h > maxY) maxY = y + h;
+    });
+    const bboxW = maxX - minX;
+    const bboxH = maxY - minY;
+    scale = Math.min(usable / bboxW, usable / bboxH);
+    const renderW = bboxW * scale;
+    const renderH = bboxH * scale;
+    originX = padding + (usable - renderW) / 2 - minX * scale;
+    originY = padding + (usable - renderH) / 2 - minY * scale;
+  } else {
+    // Use full grid as canvas (for target — keeps absolute position visible)
+    scale = Math.min(usable / gridW, usable / gridH);
+    const renderW = gridW * scale;
+    const renderH = gridH * scale;
+    originX = padding + (usable - renderW) / 2;
+    originY = padding + (usable - renderH) / 2;
+  }
+
+  let inner = '';
+  rects.forEach(([x, y, w, h]) => {
+    const rx = originX + x * scale;
+    const ry = originY + y * scale;
+    const rw = w * scale;
+    const rh = h * scale;
+    inner += `<rect x="${rx}" y="${ry}" width="${rw}" height="${rh}" fill="${fill}" stroke="${stroke}" stroke-width="${scale * strokeW}"/>`;
+  });
+
+  return `<svg viewBox="0 0 ${canvasSize} ${canvasSize}" width="${canvasSize}" height="${canvasSize}">${inner}</svg>`;
+}
+
+function renderPuzzle(item) {
+  const area = document.getElementById('question-area');
+  // Render target using its grid dimensions
+  const targetSvg = renderRectsSvg(
+    item.target,
+    item.gridW,
+    item.gridH,
+    180,
+    {fill: '#1a1814', stroke: 'rgba(255,250,240,0.5)'}
+  );
+
+  let html = `<div style="text-align:center; margin-bottom: 24px;">
+    <div style="font-family: 'JetBrains Mono'; font-size: 10px; letter-spacing: 0.25em; color: var(--ink-soft); margin-bottom: 12px;">目 標 圖 形 · TARGET</div>
+    ${targetSvg}
+  </div>
+  <div style="text-align:center; font-family: 'JetBrains Mono'; font-size: 11px; letter-spacing: 0.2em; color: var(--ink-soft); margin-bottom: 14px;">
+    請選出 3 個能組成目標的碎片 · 已選 <span id="puzzle-count" style="color: var(--accent); font-weight: 600;">0</span> / 3
+  </div>
+  <div class="choices" id="choices"></div>
+  <div style="text-align:center; margin-top: 20px;">
+    <button id="puzzle-submit" class="primary" disabled onclick="puzzleSubmit()">提交答案</button>
+  </div>`;
+  area.innerHTML = html;
+
+  const choicesDiv = document.getElementById('choices');
+  const labels = ['A','B','C','D','E','F'];
+  item.choices.forEach((c, i) => {
+    // Render each piece using the SAME grid as the target, so pieces preserve their relative size
+    // (a 1×4 piece looks 4× larger than a 1×1 piece, matching the target's scale)
+    const pieceSvgStr = renderRectsSvg(
+      c.rects,
+      item.gridW,
+      item.gridH,
+      90,
+      {fill: '#8b2417', stroke: 'rgba(255,250,240,0.5)'}
+    );
+    const div = document.createElement('div');
+    div.className = 'choice';
+    div.dataset.idx = i;
+    div.innerHTML = `${pieceSvgStr}<div class="label">${labels[i]}</div>`;
+    div.onclick = () => puzzleToggle(i);
+    choicesDiv.appendChild(div);
+  });
+
+  state.puzzleSelected = new Set();
+}
+
+function puzzleToggle(idx) {
+  if (state.answered) return;
+  const el = document.querySelector(`#choices .choice[data-idx="${idx}"]`);
+  if (state.puzzleSelected.has(idx)) {
+    state.puzzleSelected.delete(idx);
+    el.classList.remove('selected');
+  } else {
+    if (state.puzzleSelected.size >= 3) return; // can't pick more than 3
+    state.puzzleSelected.add(idx);
+    el.classList.add('selected');
+  }
+  document.getElementById('puzzle-count').textContent = state.puzzleSelected.size;
+  document.getElementById('puzzle-submit').disabled = (state.puzzleSelected.size !== 3);
+}
+
+function puzzleSubmit() {
+  if (state.answered) return;
+  if (state.puzzleSelected.size !== 3) return;
+  state.answered = true;
+  const item = TESTS.puzzle.items[state.currentItem];
+  const answerSet = new Set(item.answer);
+  const userSet = state.puzzleSelected;
+  // correct iff sets are equal
+  let correct = (userSet.size === answerSet.size);
+  if (correct) {
+    for (const v of userSet) {
+      if (!answerSet.has(v)) { correct = false; break; }
+    }
+  }
+  if (correct) state.scores.puzzle++;
+
+  // highlight: correct picks green, wrong picks red, missed correct answers green outline
+  document.querySelectorAll('#choices .choice').forEach(el => {
+    const idx = parseInt(el.dataset.idx);
+    el.classList.remove('selected');
+    if (userSet.has(idx) && answerSet.has(idx)) {
+      el.classList.add('correct');
+    } else if (userSet.has(idx) && !answerSet.has(idx)) {
+      el.classList.add('wrong');
+    } else if (!userSet.has(idx) && answerSet.has(idx)) {
+      el.classList.add('correct');
+      el.style.opacity = '0.6';
+    }
+    el.style.pointerEvents = 'none';
+  });
+
+  document.getElementById('puzzle-submit').disabled = true;
+  const fb = document.getElementById('feedback');
+  fb.textContent = correct ? '正確 · CORRECT' : '不正確 · INCORRECT';
+  fb.className = 'feedback ' + (correct ? 'correct' : 'wrong');
+  document.getElementById('next-btn').disabled = false;
+}
+
+// ==================================================
+// WEIGHT RENDER
+// ==================================================
+
+function balanceSvg(left, right, balanced = true, isQuestion = false) {
+  const W = 360, H = 130;
+  const beamY = 50;
+  const pivotX = W / 2;
+  const leftCenter = pivotX - 90;
+  const rightCenter = pivotX + 90;
+  const panW = 80;
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="max-width:100%;">`;
+  // pivot
+  svg += `<polygon points="${pivotX},${beamY + 5} ${pivotX - 14},${H - 10} ${pivotX + 14},${H - 10}" fill="#44403a"/>`;
+  // beam
+  svg += `<line x1="${leftCenter}" y1="${beamY}" x2="${rightCenter}" y2="${beamY}" stroke="#1a1814" stroke-width="3"/>`;
+  // strings
+  svg += `<line x1="${leftCenter}" y1="${beamY}" x2="${leftCenter - panW/2 + 6}" y2="${beamY + 22}" stroke="#1a1814" stroke-width="1"/>`;
+  svg += `<line x1="${leftCenter}" y1="${beamY}" x2="${leftCenter + panW/2 - 6}" y2="${beamY + 22}" stroke="#1a1814" stroke-width="1"/>`;
+  svg += `<line x1="${rightCenter}" y1="${beamY}" x2="${rightCenter - panW/2 + 6}" y2="${beamY + 22}" stroke="#1a1814" stroke-width="1"/>`;
+  svg += `<line x1="${rightCenter}" y1="${beamY}" x2="${rightCenter + panW/2 - 6}" y2="${beamY + 22}" stroke="#1a1814" stroke-width="1"/>`;
+  // pans
+  svg += `<path d="M ${leftCenter - panW/2} ${beamY + 22} Q ${leftCenter} ${beamY + 40} ${leftCenter + panW/2} ${beamY + 22}" fill="none" stroke="#1a1814" stroke-width="2"/>`;
+  svg += `<line x1="${leftCenter - panW/2}" y1="${beamY + 22}" x2="${leftCenter + panW/2}" y2="${beamY + 22}" stroke="#1a1814" stroke-width="2"/>`;
+  svg += `<path d="M ${rightCenter - panW/2} ${beamY + 22} Q ${rightCenter} ${beamY + 40} ${rightCenter + panW/2} ${beamY + 22}" fill="none" stroke="#1a1814" stroke-width="2"/>`;
+  svg += `<line x1="${rightCenter - panW/2}" y1="${beamY + 22}" x2="${rightCenter + panW/2}" y2="${beamY + 22}" stroke="#1a1814" stroke-width="2"/>`;
+  // items on pans
+  const colorMap = {circle:'#8b2417', square:'#1a3a5c', triangle:'#3d5a3a', hex:'#a06820', diamond:'#5c1a4a', star:'#8b6f00'};
+  function drawItems(items, cx, cy) {
+    if (items === '?') {
+      return `<text x="${cx}" y="${cy + 6}" font-family="Cormorant Garamond" font-size="32" font-style="italic" fill="#8b2417" text-anchor="middle">?</text>`;
+    }
+    const n = items.length;
+    if (n === 0) return '';
+
+    // Choose columns based on count — keep contained within pan width (~72px usable)
+    let cols;
+    if (n <= 3) cols = n;
+    else if (n <= 6) cols = 3;
+    else if (n <= 8) cols = 4;
+    else if (n <= 12) cols = 4;
+    else cols = Math.ceil(Math.sqrt(n));
+
+    const rows = Math.ceil(n / cols);
+    const usableW = 72;
+    const usableH = 34;
+    const cellW = usableW / cols;
+    const cellH = usableH / rows;
+    const itemSize = Math.min(cellW * 0.85, cellH * 0.85, 20);
+
+    let out = '';
+    items.forEach((it, i) => {
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      const itemsInThisRow = (row === rows - 1) ? (n - row * cols) : cols;
+      const rowOffset = (cols - itemsInThisRow) * cellW / 2;
+      const ix = cx - usableW/2 + rowOffset + col * cellW + cellW / 2;
+      const iy = cy - usableH/2 + row * cellH + cellH / 2 - 2;
+      out += `<g transform="translate(${ix},${iy})">${svgShape(it, colorMap[it] || '#1a1814', itemSize)}</g>`;
+    });
+    return out;
+  }
+  svg += drawItems(left, leftCenter, beamY + 14);
+  svg += drawItems(right, rightCenter, beamY + 14);
+  svg += '</svg>';
+  return svg;
+}
+
+function renderWeight(item) {
+  const area = document.getElementById('question-area');
+  let html = '<div class="balance-stage">';
+  item.balanced.forEach((b, i) => {
+    html += `<div style="text-align:center;">
+      <div style="font-family: 'JetBrains Mono'; font-size: 10px; letter-spacing: 0.2em; color: var(--ink-soft); margin-bottom: 8px;">已知 ${i+1} · 平衡</div>
+      ${balanceSvg(b.left, b.right)}
+    </div>`;
+  });
+  html += `<div style="text-align:center;">
+    <div style="font-family: 'JetBrains Mono'; font-size: 10px; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 8px;">求 · 右邊應放什麼才能平衡？</div>
+    ${balanceSvg(item.question.left, '?')}
+  </div>`;
+  html += '</div><div class="choices" id="choices"></div>';
+  area.innerHTML = html;
+
+  const colorMap = {circle:'#8b2417', square:'#1a3a5c', triangle:'#3d5a3a', hex:'#a06820', diamond:'#5c1a4a', star:'#8b6f00'};
+  const choicesDiv = document.getElementById('choices');
+  const labels = ['A','B','C','D','E'];
+  item.choices.forEach((c, i) => {
+    // Use auto-grid layout for choices too
+    const n = c.length;
+    let cols;
+    if (n <= 3) cols = n;
+    else if (n <= 6) cols = 3;
+    else if (n <= 8) cols = 4;
+    else if (n <= 12) cols = 4;
+    else cols = Math.ceil(Math.sqrt(n));
+    const rows = Math.ceil(n / cols);
+    const padding = 8;
+    const usableW = 100 - padding * 2;
+    const usableH = 100 - padding * 2;
+    const cellW = usableW / cols;
+    const cellH = usableH / rows;
+    const itemSize = Math.min(cellW * 0.85, cellH * 0.85, 26);
+
+    let inner = '';
+    c.forEach((it, j) => {
+      const col = j % cols;
+      const row = Math.floor(j / cols);
+      const itemsInThisRow = (row === rows - 1) ? (n - row * cols) : cols;
+      const rowOffset = (cols - itemsInThisRow) * cellW / 2;
+      const ix = padding + rowOffset + col * cellW + cellW / 2;
+      const iy = padding + row * cellH + cellH / 2;
+      inner += `<g transform="translate(${ix},${iy})">${svgShape(it, colorMap[it] || '#1a1814', itemSize)}</g>`;
+    });
+    const div = document.createElement('div');
+    div.className = 'choice';
+    div.innerHTML = `<svg viewBox="0 0 100 100" width="80" height="80">${inner}</svg><div class="label">${labels[i]}</div>`;
+    div.onclick = () => selectChoice(i, item.answer);
+    choicesDiv.appendChild(div);
+  });
+}
+
+// ==================================================
+// MEMORY (DIGIT SPAN) RENDER
+// ==================================================
+
+function renderMemory(item) {
+  const area = document.getElementById('question-area');
+  const modeLabels = {
+    forward:  {zh: '順序背誦',   en: 'Forward',  hint: '依「原本」順序輸入'},
+    backward: {zh: '逆序背誦',   en: 'Backward', hint: '依「相反」順序輸入'},
+    sorted:   {zh: '排序背誦',   en: 'Sorted',   hint: '由「小到大」重排後輸入'}
+  };
+  const m = modeLabels[item.mode];
+
+  area.innerHTML = `
+    <div style="text-align:center; margin-bottom: 18px;">
+      <div style="font-family: 'JetBrains Mono'; font-size: 10px; letter-spacing: 0.3em; color: var(--accent); text-transform: uppercase; margin-bottom: 6px;">${m.en} Mode</div>
+      <div style="font-family: 'Noto Serif TC'; font-size: 20px; font-weight: 600; margin-bottom: 4px;">${m.zh}</div>
+      <div style="font-family: 'Noto Serif TC'; font-size: 13px; color: var(--ink-soft);">${m.hint}</div>
+    </div>
+    <div id="mem-stage" style="
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--paper);
+      border: 1.5px solid var(--rule);
+      margin-bottom: 20px;
+      position: relative;
+    ">
+      <div id="mem-display" style="
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 96px;
+        font-weight: 500;
+        color: var(--ink);
+        line-height: 1;
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      "></div>
+      <div id="mem-status" style="
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10px;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        margin-top: 8px;
+      ">準備中…</div>
+    </div>
+    <div id="mem-input-area" style="display: none;">
+      <div style="text-align:center; font-family: 'JetBrains Mono'; font-size: 11px; letter-spacing: 0.2em; color: var(--ink-soft); margin-bottom: 12px;">
+        你的答案
+      </div>
+      <div id="mem-answer" style="
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 36px;
+        text-align: center;
+        min-height: 50px;
+        letter-spacing: 0.3em;
+        margin-bottom: 18px;
+        padding: 10px;
+        border-bottom: 2px solid var(--ink);
+        color: var(--ink);
+      "></div>
+      <div id="mem-keypad" style="
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        max-width: 280px;
+        margin: 0 auto;
+      "></div>
+      <div style="text-align:center; margin-top: 16px;">
+        <button id="mem-submit" class="primary" disabled onclick="memorySubmit()">提交答案</button>
+      </div>
+    </div>
+  `;
+
+  state.memoryInput = [];
+  state.memoryExpected = item.expected;
+  state.memoryTimeouts = [];
+
+  // Start the digit flash sequence
+  state.memoryTimeouts.push(setTimeout(() => playMemorySequence(item.sequence), 700));
+}
+
+function playMemorySequence(sequence) {
+  const display = document.getElementById('mem-display');
+  const status = document.getElementById('mem-status');
+  if (!display) return; // user navigated away
+
+  let i = 0;
+  const showNext = () => {
+    if (!document.getElementById('mem-display')) return; // navigated away
+    if (i >= sequence.length) {
+      // Done flashing
+      display.textContent = '';
+      status.textContent = '請輸入答案 · YOUR TURN';
+      status.style.color = 'var(--accent)';
+      showMemoryKeypad();
+      return;
+    }
+    display.textContent = sequence[i];
+    status.textContent = `${i + 1} / ${sequence.length}`;
+    i++;
+    // Show for 1000ms, then blank for 300ms, then next
+    state.memoryTimeouts.push(setTimeout(() => {
+      if (!document.getElementById('mem-display')) return;
+      display.textContent = '';
+      state.memoryTimeouts.push(setTimeout(showNext, 300));
+    }, 1000));
+  };
+  status.textContent = '注意看 · WATCH';
+  showNext();
+}
+
+function showMemoryKeypad() {
+  const area = document.getElementById('mem-input-area');
+  if (!area) return;
+  area.style.display = 'block';
+  const keypad = document.getElementById('mem-keypad');
+
+  // 1-9, then clear, 0, backspace
+  const keys = ['1','2','3','4','5','6','7','8','9','清除','0','⌫'];
+  keypad.innerHTML = '';
+  keys.forEach(k => {
+    const btn = document.createElement('button');
+    btn.className = 'mem-key';
+    btn.textContent = k;
+    btn.style.cssText = `
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 500;
+      padding: 14px 0;
+      background: var(--paper-dark);
+      border: 1.5px solid var(--rule);
+      color: var(--ink);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    `;
+    if (k === '清除' || k === '⌫') {
+      btn.style.fontFamily = "'Noto Serif TC', serif";
+      btn.style.fontSize = '15px';
+      btn.style.color = 'var(--accent)';
+    }
+    btn.onmouseover = () => { btn.style.background = 'var(--ink)'; btn.style.color = 'var(--paper)'; };
+    btn.onmouseout = () => {
+      btn.style.background = 'var(--paper-dark)';
+      btn.style.color = (k === '清除' || k === '⌫') ? 'var(--accent)' : 'var(--ink)';
+    };
+    btn.onclick = () => memoryKeyPress(k);
+    keypad.appendChild(btn);
+  });
+}
+
+function memoryKeyPress(k) {
+  if (state.answered) return;
+  if (k === '清除') {
+    state.memoryInput = [];
+  } else if (k === '⌫') {
+    state.memoryInput.pop();
+  } else {
+    if (state.memoryInput.length >= state.memoryExpected.length) return;
+    state.memoryInput.push(parseInt(k));
+  }
+  const ans = document.getElementById('mem-answer');
+  ans.textContent = state.memoryInput.join(' ');
+  document.getElementById('mem-submit').disabled = (state.memoryInput.length !== state.memoryExpected.length);
+}
+
+function memorySubmit() {
+  if (state.answered) return;
+  if (state.memoryInput.length !== state.memoryExpected.length) return;
+  state.answered = true;
+
+  // Compare arrays
+  let correct = true;
+  for (let i = 0; i < state.memoryExpected.length; i++) {
+    if (state.memoryInput[i] !== state.memoryExpected[i]) { correct = false; break; }
+  }
+  if (correct) state.scores.memory++;
+
+  // Highlight answer
+  const ans = document.getElementById('mem-answer');
+  if (correct) {
+    ans.style.color = '#3d5a3a';
+    ans.style.borderBottomColor = '#3d5a3a';
+  } else {
+    ans.style.color = '#8b2417';
+    ans.style.borderBottomColor = '#8b2417';
+    // Show correct answer below
+    const correctDiv = document.createElement('div');
+    correctDiv.style.cssText = "font-family: 'Cormorant Garamond', serif; font-size: 22px; text-align: center; letter-spacing: 0.3em; color: #3d5a3a; margin-top: 12px;";
+    correctDiv.textContent = '正解：' + state.memoryExpected.join(' ');
+    ans.parentNode.insertBefore(correctDiv, ans.nextSibling);
+  }
+
+  // Disable keypad
+  document.querySelectorAll('.mem-key').forEach(b => {
+    b.disabled = true;
+    b.style.opacity = '0.4';
+    b.style.cursor = 'not-allowed';
+    b.onmouseover = null;
+    b.onmouseout = null;
+  });
+  document.getElementById('mem-submit').disabled = true;
+
+  const fb = document.getElementById('feedback');
+  fb.textContent = correct ? '正確 · CORRECT' : '不正確 · INCORRECT';
+  fb.className = 'feedback ' + (correct ? 'correct' : 'wrong');
+  document.getElementById('next-btn').disabled = false;
+}
+
+function selectChoice(idx, answer) {
+  if (state.answered) return;
+  state.answered = true;
+  state.selected = idx;
+  const choices = document.querySelectorAll('#choices .choice');
+  choices.forEach((c, i) => {
+    if (i === answer) c.classList.add('correct');
+    if (i === idx && i !== answer) c.classList.add('wrong');
+  });
+  const correct = (idx === answer);
+  if (correct) state.scores[state.currentTest]++;
+
+  const fb = document.getElementById('feedback');
+  fb.textContent = correct ? '正確 · CORRECT' : '不正確 · INCORRECT';
+  fb.className = 'feedback ' + (correct ? 'correct' : 'wrong');
+
+  document.getElementById('next-btn').disabled = false;
+}
+
+// ==================================================
+// RESULTS
+// ==================================================
+
+function showResults() {
+  clearTimer();
+  const table = document.getElementById('results-table');
+  const testKeys = state.sequence || [state.currentTest];
+  let html = `<thead><tr><th>分測驗</th><th>構念</th><th style="text-align:right;">分數</th></tr></thead><tbody>`;
+  let totalCorrect = 0, totalItems = 0;
+  testKeys.forEach(k => {
+    const t = TESTS[k];
+    const s = state.scores[k];
+    const tot = t.items.length;
+    totalCorrect += s;
+    totalItems += tot;
+    html += `<tr>
+      <td><em>${t.title}</em></td>
+      <td style="font-family:'JetBrains Mono'; font-size:11px; color:var(--ink-soft); letter-spacing:0.1em;">${t.meta}</td>
+      <td class="score" style="text-align:right;">${s} / ${tot}</td>
+    </tr>`;
+  });
+  html += `<tr style="border-top: 2px solid var(--ink);">
+    <td><strong>總計</strong></td>
+    <td></td>
+    <td class="score" style="text-align:right;"><strong>${totalCorrect} / ${totalItems}</strong></td>
+  </tr></tbody>`;
+  table.innerHTML = html;
+
+  const pct = Math.round(totalCorrect / totalItems * 100);
+  let msg = '';
+  if (pct >= 80) msg = '答對率相當不錯，這四類認知能力你都展現了不錯的水準。';
+  else if (pct >= 60) msg = '中等表現。某些題型可能比其他題型更直覺一些。';
+  else if (pct >= 40) msg = '部分題目有挑戰性，這很正常——這幾類題目本來就是設計來測量推理能力的極限。';
+  else msg = '這套題目的難度偏高，加上題數少，單次結果不代表什麼。';
+
+  document.getElementById('results-summary').innerHTML = `
+    <p style="margin-bottom: 12px;">${msg}</p>
+    <p style="font-size: 12px; color: var(--ink-soft); font-style: italic;">
+    再次提醒：本測驗只有 ${totalItems} 題，沒有常模、沒有信效度驗證，與真正的標準化認知測驗無法相提並論。
+    結果僅供體驗，不能反映你的實際認知能力。
+    </p>
+  `;
+
+  showScreen('results');
+}
+
+</script>
+</body>
+</html>
